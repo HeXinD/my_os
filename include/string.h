@@ -21,8 +21,8 @@
  */
 static inline void memcpy(void *dst, const void *src, uint32_t *len)
 {
-	int8_t *ds = (int8_t *)dst;
-	int8_t *sc = (int8_t *)src;
+	char *ds = (char *)dst;
+	char *sc = (char *)src;
 
 	while(len--) {
 		*ds++ = *sc++;
@@ -36,9 +36,9 @@ static inline void memcpy(void *dst, const void *src, uint32_t *len)
  * @param val
  * @param len
  */
-static inline void memset(void *dst, uint8_t val, uint32_t len)
+static inline void memset(void *dst, int val, uint32_t len)
 {
-	int8_t *ds = (int8_t *)dst;
+	char *ds = (char *)dst;
 
 	while (len--) {
 		*ds++ = val;	
@@ -53,7 +53,7 @@ static inline void memset(void *dst, uint8_t val, uint32_t len)
  */
 static inline void bzero(void *dst, uint32_t len)
 {
-	int8_t *ds = (int8_t *)dst;
+	char *ds = (char *)dst;
 
 	while(len--) {
 		*ds++ = 0;
@@ -68,7 +68,7 @@ static inline void bzero(void *dst, uint32_t len)
  *
  * @return 
  */
-static inline int32_t strcmp(const int8_t *str1, const int8_t *str2)
+static inline int32_t strcmp(const char *str1, const char *str2)
 {
 	while (*str1 && *str2 && (*str1 == *str2)) {
 		str1++;
@@ -86,9 +86,9 @@ static inline int32_t strcmp(const int8_t *str1, const int8_t *str2)
  *
  * @return 
  */
-static inline int8_t *strcpy(int8_t *dest, const int8_t *src)
+static inline char * strcpy(char *dest, const char *src)
 {
-	int8_t *ret = dest;
+	char *ret = dest;
 
 	while (*src) {
 		*dest++ = *src++;
@@ -107,9 +107,9 @@ static inline int8_t *strcpy(int8_t *dest, const int8_t *src)
  *
  * @return 
  */
-static inline int8_t *strcat(int8_t *desc, const int8_t *src)
+static inline char * strcat(char *desc, const char *src)
 {
-	int8_t *ret = desc;
+	char *ret = desc;
 	while (*desc) {
 		desc++;
 	}
@@ -128,9 +128,9 @@ static inline int8_t *strcat(int8_t *desc, const int8_t *src)
  *
  * @return 
  */
-static inline int32_t strlen(const int8_t *src)
+static inline int32_t strlen(const char *src)
 {
-	const int8_t *ptr = src;
+	const char *ptr = src;
 	while (*ptr) {
 		ptr++;
 	}
