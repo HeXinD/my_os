@@ -1,5 +1,4 @@
 [GLOBAL gdtr_load]
-
 gdtr_load:
 	mov eax, [esp + 4]
 	lgdt [eax]
