@@ -1,6 +1,10 @@
 #include "types.h"
+#include "common.h"
 #include "string.h"
 #include "debug.h"
+#include "8259.h"
+#include "idt.h"
+
 
 extern void idtr_load(uint32_t addr);
 
@@ -37,6 +41,23 @@ void isr28();
 void isr29();
 void isr30();
 void isr31();
+
+void isr32();
+void isr33();
+void isr34();
+void isr35();
+void isr36();
+void isr37();
+void isr38();
+void isr39();
+void isr40();
+void isr41();
+void isr42();
+void isr43();
+void isr44();
+void isr45();
+void isr46();
+void isr47();
 
 void isr255();
 
@@ -95,20 +116,43 @@ void set_intr_gate(uint32_t n, void *addr)
 	_set_gate(idt_table + n, 14, 0, addr);
 }
 
-typedef void (* irq_handle)(pt_regs *regs);
-irq_handle irq_handle_table[256];
+typedef struct {
+	irq_handle  irq_fun;
+	void       *param;
+}irq_desc;
+irq_desc irq_handle_table[256];
 
 void isr_handler(pt_regs *regs)
 {
-	if(irq_handle_table[regs->int_no]) {
-		irq_handle_table[regs->int_no](regs);
+	int        irq_num    = regs->int_no;
+	irq_handle  __irq_fun = irq_handle_table[irq_num].irq_fun;
+	void       *param     = irq_handle_table[irq_num].param; 
+
+	if(irq_num >= 40) {
+		outb(0xA0, 0x20);
+	}
+
+	outb(0x20, 0x20);
+
+	if(__irq_fun) {
+		__irq_fun(param, regs->int_no);
 	} else {
 		printk_color(rc_black, rc_blue, "Unhandled interrupt: %d\n", regs->int_no);
 	}
 }
 
+void isr_register(int irq_num, irq_handle isr_fun, void *param)
+{
+	if (isr_fun != NULL) {
+		irq_handle_table[irq_num].irq_fun = isr_fun;
+		irq_handle_table[irq_num].param = param;
+	}
+}
+
 void idt_init()
 {
+	apic_8259_init();
+
 	bzero((uint8_t *)irq_handle_table, sizeof(irq_handle_table));
 
 	idt_ptr_t.limit = sizeof(idt_table) - 1;
@@ -145,6 +189,23 @@ void idt_init()
 	set_intr_gate(29, (void *)isr29);
 	set_intr_gate(30, (void *)isr30);
 	set_intr_gate(31, (void *)isr31);
+
+	set_intr_gate(32, (void *)isr32);
+	set_intr_gate(33, (void *)isr33);
+	set_intr_gate(34, (void *)isr34);
+	set_intr_gate(35, (void *)isr35);
+	set_intr_gate(36, (void *)isr36);
+	set_intr_gate(37, (void *)isr37);
+	set_intr_gate(38, (void *)isr38);
+	set_intr_gate(39, (void *)isr39);
+	set_intr_gate(40, (void *)isr40);
+	set_intr_gate(41, (void *)isr41);
+	set_intr_gate(42, (void *)isr42);
+	set_intr_gate(43, (void *)isr43);
+	set_intr_gate(44, (void *)isr44);
+	set_intr_gate(45, (void *)isr45);
+	set_intr_gate(46, (void *)isr46);
+	set_intr_gate(47, (void *)isr47);
 
 	set_intr_gate(255, (void *)isr255);
 
